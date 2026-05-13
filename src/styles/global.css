@@ -13,31 +13,37 @@
 	inherits: true;
 	initial-value: oklch(98.48% 0 0);
 }
+
 @property --color-global-text {
 	syntax: "<color>";
 	inherits: true;
 	initial-value: oklch(26.99% 0.0096 235.05);
 }
+
 @property --color-muted {
 	syntax: "<color>";
 	inherits: true;
 	initial-value: oklch(44.6% 0.03 256.802);
 }
+
 @property --color-link {
 	syntax: "<color>";
 	inherits: true;
 	initial-value: oklch(55.44% 0.0431 185.69);
 }
+
 @property --color-accent {
 	syntax: "<color>";
 	inherits: true;
 	initial-value: oklch(55.27% 0.195 19.06);
 }
+
 @property --color-accent-2 {
 	syntax: "<color>";
 	inherits: true;
 	initial-value: oklch(18.15% 0 0);
 }
+
 @property --color-quote {
 	syntax: "<color>";
 	inherits: true;
@@ -53,6 +59,10 @@
 	--color-accent: oklch(55.27% 0.195 19.06);
 	--color-accent-2: oklch(18.15% 0 0);
 	--color-quote: oklch(55.27% 0.195 19.06);
+	--font-mono:
+		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+		"Noto Sans Mono CJK SC", "Source Han Sans SC", "Microsoft YaHei UI", "PingFang SC",
+		"Hiragino Sans GB", monospace;
 }
 
 @layer base {
@@ -79,14 +89,13 @@
 		--color-mode-transition-duration: 300ms;
 		--color-mode-transition-easing: ease-in-out;
 
-		transition:
-			--color-global-bg var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-global-text var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-muted var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-link var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-accent var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-accent-2 var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-quote var(--color-mode-transition-duration) var(--color-mode-transition-easing);
+		transition: --color-global-bg var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+		--color-global-text var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+		--color-muted var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+		--color-link var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+		--color-accent var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+		--color-accent-2 var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+		--color-quote var(--color-mode-transition-duration) var(--color-mode-transition-easing);
 	}
 
 	:target {
@@ -102,9 +111,11 @@
 		object-fit: var(--fit);
 		object-position: var(--pos);
 	}
+
 	[data-astro-image="full-width"] {
 		width: 100%;
 	}
+
 	[data-astro-image="constrained"] {
 		max-width: 100%;
 	}
@@ -120,6 +131,15 @@
 
 	.title {
 		@apply text-accent-2 text-2xl font-semibold;
+	}
+
+	.han-name {
+		margin-left: 0.2rem;
+		font-family:
+			"SimSun", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", serif;
+		font-size: 1em;
+		font-weight: 800;
+		letter-spacing: 0.06em;
 	}
 }
 

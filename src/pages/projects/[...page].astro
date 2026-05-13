@@ -1,4 +1,4 @@
----
+﻿---
 import type { CollectionEntry } from "astro:content";
 import type { GetStaticPaths, Page } from "astro";
 import { Icon } from "astro-icon/components";
@@ -11,10 +11,15 @@ import { collectionDateSort } from "@/utils/date";
 export const getStaticPaths = (async ({ paginate }) => {
 	const MAX_POSTS_PER_PAGE = 10;
 	const MAX_TAGS = 7;
-	const MAX_PINNED_POSTS = 3;
+	const MAX_PINNED_POSTS = 4;
+	const REQUIRED_TAGS = ["final_projects"];
 	const allPosts = await getAllPosts();
 	const allPostsByDate = allPosts.sort(collectionDateSort);
-	const uniqueTags = getUniqueTags(allPosts).slice(0, MAX_TAGS);
+	const allUniqueTags = getUniqueTags(allPosts);
+	const uniqueTags = [...REQUIRED_TAGS, ...allUniqueTags.filter((tag) => !REQUIRED_TAGS.includes(tag))].slice(
+		0,
+		MAX_TAGS,
+	);
 	const pinnedPosts = allPostsByDate
 		.values()
 		.filter((p) => p.data.pinned)
@@ -35,20 +40,20 @@ interface Props {
 const { page, uniqueTags, pinnedPosts } = Astro.props;
 
 const meta = {
-	description: "Read my collection of posts and the things that interest me",
-	title: "Posts",
+	description: "Read my collection of projects and the things that interest me",
+	title: "Projects",
 };
 
 const paginationProps = {
 	...(page.url.prev && {
 		prevUrl: {
-			text: "← Previous Page",
+			text: "Previous Page",
 			url: page.url.prev,
 		},
 	}),
 	...(page.url.next && {
 		nextUrl: {
-			text: "Next Page →",
+			text: "Next Page",
 			url: page.url.next,
 		},
 	}),
@@ -60,7 +65,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 
 <PageLayout meta={meta}>
 	<div class="mb-12 flex items-center gap-3">
-		<h1 class="title">Posts</h1>
+		<h1 class="title">Projects</h1>
 		<a class="text-accent" href="/rss.xml" target="_blank">
 			<span class="sr-only">RSS feed</span>
 			<Icon aria-hidden="true" class="h-6 w-6" focusable="false" name="mdi:rss" />
@@ -71,10 +76,10 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 			{
 				pinnedPosts.length > 0 && (
 					<section class="mb-16">
-						<h2 class="title mb-6 text-xl">Pinned Posts</h2>
+						<h2 class="title text-accent mb-6 text-xl">Current Projects</h2>
 						<ul class="space-y-4" role="list">
 							{pinnedPosts.map((p) => (
-								<li class="grid gap-1 sm:grid-cols-[auto_1fr]">
+								<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:gap-x-6">
 									<PostPreview post={p} />
 								</li>
 							))}
@@ -86,12 +91,12 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 				descYearKeys.map((yearKey) => (
 					<section class="mb-16">
 						<h2 id={`year-${yearKey}`} class="title text-lg">
-							<span class="sr-only">Posts in</span>
+							<span class="sr-only">Projects in</span>
 							{yearKey}
 						</h2>
 						<ul class="mt-5 space-y-4 text-start">
 							{groupedByYear[yearKey]?.map((p) => (
-								<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:[&_q]:col-start-2">
+								<li class="grid gap-1 sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:[&_q]:col-start-2">
 									<PostPreview post={p} />
 								</li>
 							))}
@@ -128,7 +133,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 							<li>
 								<a class="cactus-link flex items-center justify-center" href={`/tags/${tag}/`}>
 									<span aria-hidden="true">#</span>
-									<span class="sr-only">View all posts with the tag</span>
+									<span class="sr-only">View all projects with the tag</span>
 									{tag}
 								</a>
 							</li>
@@ -137,7 +142,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 					<span class="mt-4 block sm:text-end">
 						<a class="hover:text-link" href="/tags/">
 							View all <span aria-hidden="true">→</span>
-							<span class="sr-only">blog tags</span>
+							<span class="sr-only">project tags</span>
 						</a>
 					</span>
 				</aside>

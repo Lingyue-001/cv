@@ -1,9 +1,9 @@
 ---
-title: Hello, Welcome
-description: An introduction to using the note feature in Astro Cactus
-publishDate: "2024-10-14T11:23:00Z"
+title: Launching my personal academic website
+description: Launching my personal academic website
+publishDate: "2026-05-13T11:23:00Z"
 ---
 
-Hi, Hello. This is an example note feature included with Astro Cactus 🌵
+This website is now online as a small working archive for my CV, digital humanities projects, and research notes.
 
-They're for shorter, more concise posts that you'd like to share. They generally don't include headings, but hey, it's entirely up to you!
+ I will use this space for short updates on MATHesis, Sanskrit manuscript transcription, and other experiments with historical texts and digital methods.

@@ -26,6 +26,9 @@ const post = defineCollection({
 			draft: z.boolean().default(false),
 			ogImage: z.string().optional(),
 			tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
+			dateRange: z.string().optional(),
+			projectUrl: z.url().optional(),
+			projectUrlText: z.string().optional(),
 			publishDate: z
 				.string()
 				.or(z.date())

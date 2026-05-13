@@ -19,12 +19,11 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 <title>{siteTitle}</title>
 
 {/* Icons */}
-<link href="/icon.svg" rel="icon" type="image/svg+xml" />
+<link href="/icon.svg?v=mdi-star-four-points-small-large" rel="icon" type="image/svg+xml" />
 {
 	import.meta.env.PROD && (
 		<>
-			{/* Favicon & Apple Icon, Generated at build */}
-			<link rel="icon" href="/favicon-32x32.png" type="image/png" />
+			{/* Apple Icon, Generated at build */}
 			<link href="/icons/apple-touch-icon.png" rel="apple-touch-icon" />
 			{/* Manifest */}
 			<link href="/manifest.webmanifest" rel="manifest" />
@@ -70,7 +69,7 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 <link href="/sitemap-index.xml" rel="sitemap" />
 
 {/* RSS auto-discovery */}
-<link href="/rss.xml" title="Blog" rel="alternate" type="application/rss+xml" />
+<link href="/rss.xml" title="Projects" rel="alternate" type="application/rss+xml" />
 <link href="/notes/rss.xml" title="Notes" rel="alternate" type="application/rss+xml" />
 
 {/* Webmentions */}

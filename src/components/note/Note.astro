@@ -38,8 +38,8 @@ const { Content } = await render(note);
 		date={note.data.publishDate}
 	/>
 	<div
-		class="prose prose-sm prose-cactus mt-4 max-w-none [&>p:last-of-type]:mb-0"
-		class:list={{ "line-clamp-6": isPreview }}
+		class="prose prose-sm prose-cactus max-w-none [&>p:last-of-type]:mb-0"
+		class:list={{ "mt-6 line-clamp-6": isPreview, "mt-8": !isPreview }}
 	>
 		<Content />
 	</div>

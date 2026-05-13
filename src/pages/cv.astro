@@ -1,0 +1,144 @@
+﻿---
+import { Icon } from "astro-icon/components";
+import PageLayout from "@/layouts/Base.astro";
+
+const meta = {
+	description: "Curriculum vitae for Lingyue Ma",
+	title: "Curriculum vitae",
+};
+---
+
+<PageLayout meta={meta}>
+	<div class="mb-12 flex items-center gap-3">
+		<h1 class="title">Curriculum vitae</h1>
+		<a
+			aria-label="Download my CV as PDF"
+			class="group relative text-accent"
+			href="/Lingyue_Ma_CV.pdf"
+			target="_blank"
+			title="Download my PDF CV"
+		>
+			<span class="sr-only">Download my PDF CV</span>
+			<Icon aria-hidden="true" class="h-6 w-6" focusable="false" name="mdi:file-document-outline" />
+			<span
+				aria-hidden="true"
+				class="bg-global-text text-global-bg pointer-events-none absolute start-1/2 top-full z-10 mt-2 w-max -translate-x-1/2 rounded px-2 py-1 text-xs font-semibold opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+			>
+				Download my PDF CV
+			</span>
+		</a>
+	</div>
+	<div>
+		<section class="mb-16">
+			<h2 class="title mb-6 text-xl">Education</h2>
+			<ul class="space-y-4" role="list">
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 sm:[&_p:nth-child(n+3)]:col-start-2">
+					<p class="text-muted min-w-30 font-semibold">Oct 2024-present</p>
+					<p class="font-semibold">M.A. Global East Asia</p>
+					<p class="text-muted">Freie Universität Berlin, Germany</p>
+				</li>
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 sm:[&_p:nth-child(n+3)]:col-start-2">
+					<p class="text-muted min-w-30 font-semibold">Sep 2018-Jun 2022</p>
+					<p class="font-semibold">B.A. Chinese Language and Literature</p>
+					<p class="text-muted">Central China Normal University, China</p>
+					<p class="text-muted">
+						Thesis: From Resistance to Generation: Dimensions of Ethnic Identity Construction in Yeats's Play
+						<cite class="italic">The Countess Cathleen</cite> (distinction; in Chinese)
+					</p>
+				</li>
+			</ul>
+		</section>
+
+		<section class="mb-16">
+			<h2 class="title mb-6 text-xl">Research Experience</h2>
+			<ul class="space-y-4 text-start" role="list">
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 sm:[&_p:nth-child(n+3)]:col-start-2">
+					<p class="text-muted min-w-30 font-semibold">Apr 2025-present</p>
+					<p class="font-semibold">
+						<a class="cactus-link" href="https://lingyue-001.github.io/MATHesis/" rel="noreferrer" target="_blank">
+							MATHesis
+						</a>
+					</p>
+					<p class="text-muted">
+						A digital database mapping symbolic numerals and mathematical expressions in pre-modern Chinese
+						astronomical texts
+					</p>
+				</li>
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 sm:[&_p:nth-child(n+3)]:col-start-2">
+					<p class="text-muted min-w-30 font-semibold">Apr 2021-Jun 2022</p>
+					<p class="font-semibold">
+						National Innovation and Entrepreneurship Training Program for College Students
+					</p>
+					<p class="text-muted">
+						The Mosaic of Shards: The Idea of Community in <cite class="italic">Dictionary of the Khazars</cite>
+					</p>
+				</li>
+			</ul>
+		</section>
+
+		<section class="mb-16">
+			<h2 class="title mb-6 text-xl">Work Experience</h2>
+			<ul class="space-y-4" role="list">
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 sm:[&_p:nth-child(n+3)]:col-start-2">
+					<p class="text-muted min-w-30 font-semibold">Apr 2025-Mar 2026</p>
+					<p class="font-semibold">Graduate Assistant</p>
+					<p class="text-muted">Max Planck Institute for the History of Science (MPIWG), Research Library</p>
+				</li>
+			</ul>
+		</section>
+
+		<section class="mb-16">
+			<h2 class="title mb-6 text-xl">Academic Training and Workshops</h2>
+			<ul class="space-y-4" role="list">
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 sm:[&_p:nth-child(n+3)]:col-start-2">
+					<p class="text-muted min-w-30 font-semibold">Jun 2026 (upcoming)</p>
+					<p class="font-semibold">
+						Training Week on the Global History of Astronomy from Primary Sources: A Focus on Cosmology, Physics, and Astrology
+					</p>
+					<p class="text-muted">
+						Bibliotheque nationale de France and Observatoire de Paris,
+						France
+					</p>
+				</li>
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 sm:[&_p:nth-child(n+3)]:col-start-2">
+					<p class="text-muted min-w-30 font-semibold">Jul 2025</p>
+					<p class="font-semibold">
+						Summer School for Current Research on the History of Mathematics in the Ancient World: New Questions and New Approaches
+					</p>
+					<p class="text-muted">
+						International Centre for Mathematical Sciences (ICMS),
+						United Kingdom
+					</p>
+				</li>
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 sm:[&_p:nth-child(n+3)]:col-start-2">
+					<p class="text-muted min-w-30 font-semibold">Oct 2024</p>
+					<p class="font-semibold">Philology in Practice: A Workshop with Professor Kenneth G. Zysk</p>
+					<p class="text-muted">
+						Max Planck Research Group Astral Sciences in Trans-Regional Asia (ASTRA), Germany
+					</p>
+				</li>
+			</ul>
+		</section>
+
+		<section class="mb-16">
+			<h2 class="title mb-6 text-xl">Language Proficiency</h2>
+			<ul class="space-y-4" role="list">
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8">
+					<p class="text-muted min-w-30 font-semibold">Classical Languages</p>
+					<div class="text-muted">
+						<p>Advanced in Classical Chinese</p>
+						<p>Basic-intermediate in Sanskrit</p>
+					</div>
+				</li>
+				<li class="grid gap-1 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8">
+					<p class="text-muted min-w-30 font-semibold">Modern Languages</p>
+					<div class="text-muted">
+						<p>Native in Chinese</p>
+						<p>Advanced in English (IELTS 7.5)</p>
+						<p>Intermediate-advanced in Japanese (JLPT N1)</p>
+					</div>
+				</li>
+			</ul>
+		</section>
+	</div>
+</PageLayout>

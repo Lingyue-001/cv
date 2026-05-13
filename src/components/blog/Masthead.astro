@@ -33,6 +33,7 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
 	)
 }
 {data.draft ? <span class="text-base text-red-500">(Draft)</span> : null}
+<div class="flex flex-col gap-4">
 <h1 class="title">
 	{data.title}
 </h1>
@@ -49,10 +50,22 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
 			</span>
 		)
 	}
+	{
+		data.projectUrl && (
+			<a
+				class="cactus-link font-semibold"
+				href={data.projectUrl}
+				rel="noopener noreferrer"
+				target="_blank"
+			>
+				{data.projectUrlText ?? "Open project"} <span aria-hidden="true">&#8599;</span>
+			</a>
+		)
+	}
 </div>
 {
 	!!data.tags?.length && (
-		<div class="mt-2">
+		<div>
 			<svg
 				aria-hidden="true"
 				class="inline-block h-6 w-6"
@@ -82,3 +95,4 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
 		</div>
 	)
 }
+</div>

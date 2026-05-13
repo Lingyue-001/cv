@@ -8,29 +8,37 @@ import { Icon } from "astro-icon/components";
 */
 const socialLinks: {
 	friendlyName: string;
-	isWebmention?: boolean;
 	link: string;
 	name: string;
 }[] = [
 	{
-		friendlyName: "Github",
-		link: "https://github.com/chrismwilliams/astro-cactus",
+		friendlyName: "Email",
+		link: "mailto:lingyue.ma@fu-berlin.de",
+		name: "mdi:email-outline",
+	},
+	{
+		friendlyName: "GitHub",
+		link: "https://github.com/Lingyue-001",
 		name: "mdi:github",
+	},
+	{
+		friendlyName: "CV",
+		link: "/Lingyue_Ma_CV.pdf",
+		name: "mdi:file-document-outline",
 	},
 ];
 ---
 
-<div class="flex flex-wrap items-end gap-x-2">
-	<p>Find me on</p>
-	<ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
+<div class="mt-6">
+	<ul class="text-muted flex items-center gap-x-4">
 		{
-			socialLinks.map(({ friendlyName, isWebmention, link, name }) => (
+			socialLinks.map(({ friendlyName, link, name }) => (
 				<li class="flex">
 					<a
 						class="hover:text-link inline-block"
 						href={link}
-						rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
-						target="_blank"
+						rel={link.startsWith("http") ? "noreferrer" : undefined}
+						target={link.startsWith("http") || link.endsWith(".pdf") ? "_blank" : undefined}
 					>
 						<Icon aria-hidden="true" class="h-8 w-8" focusable="false" name={name} />
 						<span class="sr-only">{friendlyName}</span>

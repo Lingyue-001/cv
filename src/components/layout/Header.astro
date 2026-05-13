@@ -1,98 +1,128 @@
 ---
+import { Icon } from "astro-icon/components";
 import Search from "@/components/Search.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import { menuLinks } from "@/site.config";
 import { siteConfig } from "../../site.config";
+
+const contactLinks = [
+	{
+		href: "https://github.com/Lingyue-001",
+		icon: "mdi:github",
+		label: "GitHub",
+	},
+	{
+		href: "mailto:lingyue.ma@fu-berlin.de",
+		icon: "mdi:email-outline",
+		label: "Email",
+	},
+	{
+		href: "/Lingyue_Ma_CV.pdf",
+		icon: "mdi:file-document-outline",
+		label: "CV",
+	},
+];
 ---
 
-<header class="group relative mb-28 flex items-center sm:ps-18" id="main-header">
-	<div class="flex sm:flex-col">
+<header class="group relative mb-28 flex flex-wrap items-start [&.menu-open]:mb-12 sm:items-center sm:ps-20" id="main-header">
+	<div class="min-w-0 flex-1 sm:flex sm:flex-col">
 		<a
 			aria-current={Astro.url.pathname === "/" ? "page" : false}
-			class="inline-flex items-center sm:relative sm:inline-block sm:grayscale sm:hover:filter-none"
+			class="group/logo inline-flex items-center sm:relative sm:inline-block"
 			href="/"
 		>
-			<svg
-				aria-hidden="true"
-				class="me-3 h-10 w-6 sm:absolute sm:-start-18 sm:me-0 sm:h-20 sm:w-12"
-				fill="none"
-				focusable="false"
-				viewBox="0 0 272 480"
-				xmlns="http://www.w3.org/2000/svg"
+			<span
+				class="relative me-3 inline-block h-10 w-10 overflow-hidden sm:absolute sm:-start-20 sm:me-0 sm:h-16 sm:w-16"
 			>
-				<title>Astro Cactus Logo</title>
-				<path
-					fill="#cdffb8"
-					d="M181.334 93.333v-40L226.667 80v40zM136.001 53.333 90.667 26.667v426.666L136.001 480zM45.333 220 0 193.334v140L45.333 360z"
-				></path><path
-					fill="#d482ab"
-					d="M90.667 26.667 136.001 0l45.333 26.667-45.333 26.666zM181.334 53.33l45.333-26.72L272 53.33 226.667 80zM136 240l-45.333-26.67v53.34zM0 193.33l45.333-26.72 45.334 26.72L45.333 220zM181.334 93.277 226.667 120l-45.333 26.67z"
-				></path><path
-					fill="#2abc89"
-					d="m136 53.333 45.333-26.666v120L226.667 120V80L272 53.333V160l-90.667 53.333v240L136 480V306.667L45.334 360V220l45.333-26.667v73.334L136 240z"
-				></path>
-			</svg>
-			<span class="text-xl font-bold sm:text-2xl">{siteConfig.title}</span>
+				<img
+					alt="Lingyue Ma"
+					class="h-full w-full object-cover saturate-75 brightness-90 transition duration-300 group-hover/logo:brightness-100 group-hover/logo:saturate-100"
+					src="/site-logo.png"
+				/>
+			</span>
+			<span class="text-xl font-bold sm:text-2xl">
+				{siteConfig.title}
+				<span class="han-name">馬靈玥</span>
+			</span>
 		</a>
-		<nav
-			aria-label="Main menu"
-			class="bg-global-bg absolute -inset-x-4 top-12 hidden flex-col divide-y px-2 py-4 group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:-ms-4 sm:mt-1 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
-			id="navigation-menu"
-		>
+		<p class="break-words text-gray-500 sm:mt-3">East Asian Studies · History of knowledge · Digital Humanities</p>
+	</div>
+	<div class="ms-auto flex shrink-0 items-center gap-2 sm:gap-4">
+		<Search />
+		<ThemeToggle />
+		<mobile-button class="flex h-9 w-9 items-center justify-center sm:invisible sm:hidden">
+			<button
+				aria-expanded="false"
+				aria-haspopup="menu"
+				class="hover:text-accent group relative h-9 w-9 cursor-pointer rounded-md"
+				id="toggle-navigation-menu"
+				type="button"
+			>
+				<span class="sr-only">Open main menu</span>
+				<svg
+					aria-hidden="true"
+					class="absolute start-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 transition-all group-aria-expanded:scale-0 group-aria-expanded:opacity-0"
+					fill="none"
+					focusable="false"
+					id="line-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					viewBox="0 0 24 24"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<path d="M3.75 9h16.5m-16.5 6.75h16.5" stroke-linecap="round" stroke-linejoin="round"
+					></path>
+				</svg>
+				<svg
+					aria-hidden="true"
+					class="text-accent absolute start-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 transition-all group-aria-expanded:scale-100 group-aria-expanded:opacity-100"
+					fill="none"
+					focusable="false"
+					id="cross-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					viewBox="0 0 24 24"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+			</button>
+		</mobile-button>
+	</div>
+	<nav
+		aria-label="Main menu"
+		class="bg-global-bg order-3 -mx-4 mt-6 hidden basis-full flex-col divide-y px-2 py-3 group-[.menu-open]:flex sm:mx-0 sm:-ms-4 sm:mt-3 sm:flex sm:flex-row sm:divide-x sm:divide-y-0 sm:bg-transparent sm:p-0"
+		id="navigation-menu"
+	>
+		{
+			menuLinks.map((link) => (
+				<a
+					aria-current={Astro.url.pathname === link.path ? "page" : false}
+					class="text-accent px-2 py-4 font-semibold sm:px-4 sm:py-0 sm:underline-offset-2 sm:hover:underline"
+					href={link.path}
+				>
+					{link.title}
+				</a>
+			))
+		}
+		<ul class="flex justify-end gap-3 px-2 pt-4 sm:hidden" role="list">
 			{
-				menuLinks.map((link) => (
-					<a
-						aria-current={Astro.url.pathname === link.path ? "page" : false}
-						class="text-accent px-2 py-4 font-semibold sm:px-4 sm:py-0 sm:underline-offset-2 sm:hover:underline"
-						href={link.path}
-					>
-						{link.title}
-					</a>
+				contactLinks.map((link) => (
+					<li>
+						<a
+							class="text-muted hover:text-link block"
+							href={link.href}
+							rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+							target={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "_blank" : undefined}
+						>
+							<span class="sr-only">{link.label}</span>
+							<Icon aria-hidden="true" class="h-5 w-5" focusable="false" name={link.icon} />
+						</a>
+					</li>
 				))
 			}
-		</nav>
-	</div>
-	<Search />
-	<ThemeToggle />
-	<mobile-button>
-		<button
-			aria-expanded="false"
-			aria-haspopup="menu"
-			class="group relative ms-4 h-7 w-7 sm:invisible sm:hidden"
-			id="toggle-navigation-menu"
-			type="button"
-		>
-			<span class="sr-only">Open main menu</span>
-			<svg
-				aria-hidden="true"
-				class="absolute start-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 transition-all group-aria-expanded:scale-0 group-aria-expanded:opacity-0"
-				fill="none"
-				focusable="false"
-				id="line-svg"
-				stroke="currentColor"
-				stroke-width="1.5"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path d="M3.75 9h16.5m-16.5 6.75h16.5" stroke-linecap="round" stroke-linejoin="round"
-				></path>
-			</svg>
-			<svg
-				aria-hidden="true"
-				class="text-accent absolute start-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 transition-all group-aria-expanded:scale-100 group-aria-expanded:opacity-100"
-				class="text-accent"
-				fill="none"
-				focusable="false"
-				id="cross-svg"
-				stroke="currentColor"
-				stroke-width="1.5"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
-			</svg>
-		</button>
-	</mobile-button>
+		</ul>
+	</nav>
 </header>
 
 <script>
