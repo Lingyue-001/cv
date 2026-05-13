@@ -1,6 +1,7 @@
 ﻿---
 import { Icon } from "astro-icon/components";
 import PageLayout from "@/layouts/Base.astro";
+import { withBase } from "@/utils/url";
 
 const meta = {
 	description: "Curriculum vitae for Lingyue Ma",
@@ -14,7 +15,7 @@ const meta = {
 		<a
 			aria-label="Download my CV as PDF"
 			class="group relative text-accent"
-			href="/Lingyue_Ma_CV.pdf"
+			href={withBase("/Lingyue_Ma_CV.pdf")}
 			target="_blank"
 			title="Download my PDF CV"
 		>

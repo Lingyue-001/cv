@@ -7,6 +7,7 @@ import Pagination from "@/components/Paginator.astro";
 import { getAllPosts, getUniqueTags, groupPostsByYear } from "@/data/post";
 import PageLayout from "@/layouts/Base.astro";
 import { collectionDateSort } from "@/utils/date";
+import { withBase } from "@/utils/url";
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const MAX_POSTS_PER_PAGE = 10;
@@ -66,7 +67,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 <PageLayout meta={meta}>
 	<div class="mb-12 flex items-center gap-3">
 		<h1 class="title">Projects</h1>
-		<a class="text-accent" href="/rss.xml" target="_blank">
+		<a class="text-accent" href={withBase("/rss.xml")} target="_blank">
 			<span class="sr-only">RSS feed</span>
 			<Icon aria-hidden="true" class="h-6 w-6" focusable="false" name="mdi:rss" />
 		</a>
@@ -131,7 +132,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 					<ul class="flex flex-wrap gap-2">
 						{uniqueTags.map((tag) => (
 							<li>
-								<a class="cactus-link flex items-center justify-center" href={`/tags/${tag}/`}>
+								<a class="cactus-link flex items-center justify-center" href={withBase(`/tags/${tag}/`)}>
 									<span aria-hidden="true">#</span>
 									<span class="sr-only">View all projects with the tag</span>
 									{tag}
@@ -140,7 +141,7 @@ const descYearKeys = Object.keys(groupedByYear).sort((a, b) => +b - +a);
 						))}
 					</ul>
 					<span class="mt-4 block sm:text-end">
-						<a class="hover:text-link" href="/tags/">
+						<a class="hover:text-link" href={withBase("/tags/")}>
 							View all <span aria-hidden="true">→</span>
 							<span class="sr-only">project tags</span>
 						</a>

@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import { withBase } from "@/utils/url";
 
 /** 
 	Uses https://www.astroicon.dev/getting-started/
@@ -23,7 +24,7 @@ const socialLinks: {
 	},
 	{
 		friendlyName: "CV",
-		link: "/Lingyue_Ma_CV.pdf",
+		link: withBase("/Lingyue_Ma_CV.pdf"),
 		name: "mdi:file-document-outline",
 	},
 ];
