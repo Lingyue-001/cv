@@ -133,11 +133,38 @@
 		@apply text-accent-2 text-2xl font-semibold;
 	}
 
+	.site-logo-image {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition:
+			opacity var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+			filter var(--color-mode-transition-duration) var(--color-mode-transition-easing);
+	}
+
+	.site-logo-image-light {
+		opacity: 1;
+	}
+
+	.site-logo-image-dark {
+		opacity: 0;
+	}
+
+	html[data-theme="dark"] .site-logo-image-light {
+		opacity: 0;
+	}
+
+	html[data-theme="dark"] .site-logo-image-dark {
+		opacity: 1;
+	}
+
 	.han-name {
 		margin-left: 0.2rem;
 		font-family:
-			"SimSun", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", serif;
-		font-size: 1em;
+			"FangSong", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", serif;
+		font-size: 1.15em;
 		font-weight: 800;
 		letter-spacing: 0.06em;
 	}
