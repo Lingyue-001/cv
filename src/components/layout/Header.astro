@@ -28,13 +28,14 @@ const isCurrentPath = (path: string) =>
 	Astro.url.pathname.replace(/\/$/, "") === withBase(path).replace(/\/$/, "");
 ---
 
-<header class="group relative mb-28 flex flex-wrap items-start [&.menu-open]:mb-12 sm:items-center sm:ps-20" id="main-header">
+<header class="group relative mb-28 flex flex-wrap items-start [&.menu-open]:mb-12 sm:items-center" id="main-header">
 	<div class="min-w-0 flex-1 sm:flex sm:flex-col">
 		<a
 			aria-current={isCurrentPath("/") ? "page" : false}
 			class="group/logo inline-flex items-center sm:relative sm:inline-block"
 			href={withBase("/")}
 		>
+			<!--
 			<span
 				class="relative me-3 inline-block h-10 w-10 overflow-hidden sm:absolute sm:-start-20 sm:me-0 sm:h-16 sm:w-16"
 			>
@@ -50,6 +51,7 @@ const isCurrentPath = (path: string) =>
 					src={withBase("/site-logo-green-soft.png")}
 				/>
 			</span>
+			-->
 			<span class="text-xl font-bold sm:text-2xl">
 				{siteConfig.title}
 				<span class="han-name">馬靈玥</span>
