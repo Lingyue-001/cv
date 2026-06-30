@@ -7,7 +7,7 @@ tags: ["final_projects"]
 pinned: true
 ---
 
-[Open project link ↗](https://lingyue-001.github.io/MATHesis/transcriptions/tei_brhat/1r/)
+[Open project link ↗](https://mathesis.netlify.app/transcriptions/tei_brhat/1r/)
 - A project testing Jaina Devanāgarī manuscript transcription, HTR/OCR-assisted recognition, and web-based presentation
 - Text: *Bṛhatsaṃhitā*, MS Add.2329
 - Tools: Semi-Automatic HTR tool, TEI/XML, embedded manuscript-image viewer

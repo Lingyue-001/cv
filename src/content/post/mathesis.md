@@ -7,7 +7,7 @@ tags: ["final_projects"]
 pinned: true
 ---
 
-[Open project link ↗](https://lingyue-001.github.io/MATHesis/)
+[Open project link ↗](https://mathesis.netlify.app/patterns/)
 - A digital database project on numerical symbolism, mathematical expressions, and astral-calendrical knowledge in pre-modern Chinese sources
 - Text: *Hanshu·Lülizhi* 漢書·律曆志
 - Tools: Neo4j, Eleventy, vis-network

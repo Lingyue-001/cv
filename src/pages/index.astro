@@ -18,8 +18,8 @@ const pinnedPosts = allPostsByDate
 	.take(MAX_PINNED_POSTS)
 	.toArray();
 
-// Notes, set to a max of 5
-const MAX_NOTES = 5;
+// Notes, set to a max of 1, can be modified to include more notes at the homepage if desired
+const MAX_NOTES = 1;
 const allNotes = await getCollection("note");
 const latestNotes = allNotes
 	.sort(collectionDateSort)
