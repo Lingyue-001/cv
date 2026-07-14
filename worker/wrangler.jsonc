@@ -1,0 +1,14 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "cv-page-editor",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-07-13",
+	"vars": {
+		"ALLOWED_ORIGIN": "https://lingyue-001.github.io",
+		"ADMIN_RETURN_URL": "https://lingyue-001.github.io/cv/admin/",
+		"OWNER_GITHUB_ID": "209462077",
+		"REPO_OWNER": "Lingyue-001",
+		"REPO_NAME": "cv",
+		"BRANCH": "main"
+	}
+}

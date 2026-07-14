@@ -4,6 +4,8 @@ dist/
 
 # dependencies
 node_modules/
+.wrangler/
+worker/.dev.vars
 
 # logs
 npm-debug.log*

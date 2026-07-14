@@ -1,0 +1,161 @@
+---
+import PageLayout from "@/layouts/Base.astro";
+
+const adminApiUrl = import.meta.env.PUBLIC_ADMIN_API_URL ?? "";
+const meta = { title: "Content editor", description: "Private content editor" };
+---
+
+<PageLayout meta={meta}>
+	<section class="admin-editor" data-admin-api={adminApiUrl}>
+		<header class="admin-header">
+			<div><p class="eyebrow">Private workspace</p><h1 class="title">Content editor</h1></div>
+			<span class="status" data-status>Checking sign-in…</span>
+		</header>
+
+		<div class="login-panel" data-login hidden>
+			<p>Sign in with the authorised GitHub account to create or edit content.</p>
+			<a class="button primary" data-login-link href="#">Sign in with GitHub</a>
+		</div>
+
+		<form data-editor-form hidden>
+			<div class="toolbar">
+				<label><span>Content type</span><select name="type"><option value="note">Note</option><option value="post">Project</option></select></label>
+				<button class="button" data-new-document type="button">New document</button>
+			</div>
+			<div class="editor-grid">
+				<div class="fields">
+					<label><span>Title</span><input maxlength="60" name="title" required /></label>
+					<label><span>Slug</span><input name="slug" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></label>
+					<label><span>Description</span><textarea name="description" rows="2"></textarea></label>
+					<label><span>Publish date</span><input name="publishDate" required type="datetime-local" /></label>
+					<div class="fields" data-post-fields hidden>
+						<label><span>Date range</span><input name="dateRange" placeholder="May 2026" /></label>
+						<label><span>Tags</span><input name="tags" placeholder="digital-humanities, manuscripts" /></label>
+						<label><span>Project URL</span><input name="projectUrl" type="url" /></label>
+						<label><span>URL label</span><input name="projectUrlText" /></label>
+						<div class="checks"><label><input name="pinned" type="checkbox" /><span>Pinned</span></label><label><input name="draft" type="checkbox" /><span>Draft</span></label></div>
+					</div>
+					<label><span>Body (Markdown)</span><textarea class="body-field" name="body" rows="18"></textarea></label>
+				</div>
+				<section class="preview-panel" aria-live="polite"><p class="eyebrow">Preview</p><article class="prose prose-sm max-w-none" data-preview></article></section>
+			</div>
+			<div class="actions"><button class="button primary" data-publish type="submit">Publish to GitHub</button><span class="status" data-save-message></span></div>
+		</form>
+	</section>
+</PageLayout>
+
+<script>
+	const SESSION_KEY = "lingyue_admin_session";
+	const root = document.querySelector<HTMLElement>(".admin-editor")!;
+	const form = root.querySelector<HTMLFormElement>("[data-editor-form]")!;
+	const loginPanel = root.querySelector<HTMLElement>("[data-login]")!;
+	const loginLink = root.querySelector<HTMLAnchorElement>("[data-login-link]")!;
+	const status = root.querySelector<HTMLElement>("[data-status]")!;
+	const saveMessage = root.querySelector<HTMLElement>("[data-save-message]")!;
+	const preview = root.querySelector<HTMLElement>("[data-preview]")!;
+	const postFields = root.querySelector<HTMLElement>("[data-post-fields]")!;
+	const apiUrl = root.dataset.adminApi?.replace(/\/$/, "") ?? "";
+	let currentSha = "";
+
+	function field<T extends HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(name: string) { return form.elements.namedItem(name) as T; }
+	function takeSessionFromHash() {
+		const hash = new URLSearchParams(location.hash.slice(1));
+		const session = hash.get("admin_session");
+		if (!session) return;
+		localStorage.setItem(SESSION_KEY, session);
+		history.replaceState(null, "", `${location.pathname}${location.search}`);
+	}
+	function slugify(value: string) { return value.normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80); }
+	function escapeHtml(value: string) { return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]!); }
+	function inlineMarkdown(value: string) {
+		return escapeHtml(value).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/\*([^*]+)\*/g, "<em>$1</em>").replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" rel="noreferrer" target="_blank">$1</a>');
+	}
+	function renderPreview() {
+		const title = field<HTMLInputElement>("title").value || "Untitled";
+		const body = field<HTMLTextAreaElement>("body").value;
+		const blocks = body.split(/\n{2,}/).filter(Boolean).map((block) => {
+			if (/^### /.test(block)) return `<h3>${inlineMarkdown(block.slice(4))}</h3>`;
+			if (/^## /.test(block)) return `<h2>${inlineMarkdown(block.slice(3))}</h2>`;
+			if (/^# /.test(block)) return `<h1>${inlineMarkdown(block.slice(2))}</h1>`;
+			if (/^(?:- .+\n?)+$/.test(block)) return `<ul>${block.split("\n").map((line) => `<li>${inlineMarkdown(line.slice(2))}</li>`).join("")}</ul>`;
+			return `<p>${inlineMarkdown(block).replace(/\n/g, "<br>")}</p>`;
+		});
+		preview.innerHTML = `<h1>${escapeHtml(title)}</h1>${blocks.join("")}`;
+	}
+	function updateType() { postFields.hidden = field<HTMLSelectElement>("type").value !== "post"; }
+	function setNow() { field<HTMLInputElement>("publishDate").value = new Date(Date.now() - new Date().getTimezoneOffset() * 60_000).toISOString().slice(0, 16); }
+	function resetDocument() {
+		const type = field<HTMLSelectElement>("type").value;
+		form.reset(); field<HTMLSelectElement>("type").value = type; currentSha = ""; setNow(); updateType(); renderPreview();
+		history.replaceState(null, "", `${location.pathname}?type=${type}`);
+	}
+	function parseFrontmatter(raw: string) {
+		const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+		if (!match) return { data: {} as Record<string, unknown>, body: raw };
+		const data: Record<string, unknown> = {};
+		for (const line of match[1]!.split(/\r?\n/)) {
+			const separator = line.indexOf(":"); if (separator < 0) continue;
+			const key = line.slice(0, separator).trim(); const rawValue = line.slice(separator + 1).trim();
+			try { data[key] = JSON.parse(rawValue); } catch { data[key] = rawValue; }
+		}
+		return { data, body: match[2] ?? "" };
+	}
+	function populate(raw: string, slug: string, sha: string) {
+		const { data, body } = parseFrontmatter(raw); currentSha = sha;
+		field<HTMLInputElement>("slug").value = slug; field<HTMLInputElement>("title").value = String(data.title ?? "");
+		field<HTMLTextAreaElement>("description").value = String(data.description ?? ""); field<HTMLInputElement>("dateRange").value = String(data.dateRange ?? "");
+		field<HTMLInputElement>("projectUrl").value = String(data.projectUrl ?? ""); field<HTMLInputElement>("projectUrlText").value = String(data.projectUrlText ?? "");
+		field<HTMLInputElement>("tags").value = Array.isArray(data.tags) ? data.tags.join(", ") : ""; field<HTMLInputElement>("pinned").checked = data.pinned === true;
+		field<HTMLInputElement>("draft").checked = data.draft === true; field<HTMLTextAreaElement>("body").value = body.trimEnd();
+		const date = new Date(String(data.publishDate ?? ""));
+		if (!Number.isNaN(date.valueOf())) field<HTMLInputElement>("publishDate").value = new Date(date.valueOf() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
+		renderPreview();
+	}
+	async function api(path: string, init: RequestInit = {}) {
+		const headers = new Headers(init.headers); const session = localStorage.getItem(SESSION_KEY);
+		if (session) headers.set("Authorization", `Bearer ${session}`);
+		const response = await fetch(`${apiUrl}${path}`, { ...init, headers });
+		if (!response.ok) { const detail = await response.json().catch(() => ({ error: "Request failed" })); throw new Error(detail.error ?? "Request failed"); }
+		return response.json();
+	}
+	async function initialise() {
+		takeSessionFromHash();
+		if (!apiUrl) { status.textContent = "Admin API is not configured"; loginPanel.hidden = false; loginLink.hidden = true; return; }
+		loginLink.href = `${apiUrl}/auth/github?return_to=${encodeURIComponent(location.href.split("#")[0] ?? location.href)}`;
+		try {
+			const owner = await api("/api/session"); status.textContent = `Signed in as ${owner.login}`; form.hidden = false;
+			const params = new URLSearchParams(location.search); field<HTMLSelectElement>("type").value = params.get("type") === "post" ? "post" : "note"; updateType(); setNow();
+			const slug = params.get("slug");
+			if (slug) { status.textContent = "Loading document…"; const document = await api(`/api/content?type=${field<HTMLSelectElement>("type").value}&slug=${encodeURIComponent(slug)}`); populate(document.content, slug, document.sha); status.textContent = `Editing ${slug}`; }
+			else renderPreview();
+		} catch { localStorage.removeItem(SESSION_KEY); status.textContent = "Not signed in"; loginPanel.hidden = false; }
+	}
+
+	field<HTMLInputElement>("title").addEventListener("input", () => { if (!currentSha && !field<HTMLInputElement>("slug").dataset.touched) field<HTMLInputElement>("slug").value = slugify(field<HTMLInputElement>("title").value); renderPreview(); });
+	field<HTMLInputElement>("slug").addEventListener("input", (event) => { (event.currentTarget as HTMLInputElement).dataset.touched = "true"; });
+	field<HTMLTextAreaElement>("body").addEventListener("input", renderPreview); field<HTMLSelectElement>("type").addEventListener("change", updateType);
+	root.querySelector("[data-new-document]")?.addEventListener("click", resetDocument);
+	form.addEventListener("submit", async (event) => {
+		event.preventDefault(); const button = root.querySelector<HTMLButtonElement>("[data-publish]")!; button.disabled = true; saveMessage.textContent = "Publishing…";
+		try {
+			const type = field<HTMLSelectElement>("type").value; const dateValue = field<HTMLInputElement>("publishDate").value;
+			const payload = { type, slug: field<HTMLInputElement>("slug").value, title: field<HTMLInputElement>("title").value, description: field<HTMLTextAreaElement>("description").value, publishDate: type === "note" ? new Date(dateValue).toISOString() : dateValue.slice(0, 10), dateRange: field<HTMLInputElement>("dateRange").value, tags: field<HTMLInputElement>("tags").value.split(",").map((tag) => tag.trim()).filter(Boolean), projectUrl: field<HTMLInputElement>("projectUrl").value, projectUrlText: field<HTMLInputElement>("projectUrlText").value, pinned: field<HTMLInputElement>("pinned").checked, draft: field<HTMLInputElement>("draft").checked, body: field<HTMLTextAreaElement>("body").value, sha: currentSha || undefined };
+			const result = await api("/api/publish", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+			currentSha = result.sha; saveMessage.textContent = "Published. GitHub Pages is rebuilding the site."; history.replaceState(null, "", `${location.pathname}?type=${type}&slug=${encodeURIComponent(payload.slug)}`);
+		} catch (error) { saveMessage.textContent = error instanceof Error ? error.message : "Publishing failed"; }
+		finally { button.disabled = false; }
+	});
+	void initialise();
+</script>
+
+<style>
+	.admin-editor { margin-bottom: 5rem; } .admin-header, .toolbar, .actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; } .admin-header { margin-bottom: 2rem; }
+	.eyebrow { margin-bottom: .35rem; color: var(--color-accent); font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; } .status { color: var(--color-muted); font-size: .78rem; }
+	.login-panel, .preview-panel { padding: 1.25rem; border: 1px solid var(--color-gray-300); border-radius: .5rem; } .login-panel p { margin-bottom: 1rem; } .toolbar { margin-bottom: 1.5rem; }
+	.editor-grid, .fields { display: grid; gap: 1.5rem; } .fields { gap: 1rem; } .fields label, .toolbar label { display: grid; gap: .4rem; color: var(--color-muted); font-size: .78rem; font-weight: 700; }
+	.fields input, .fields textarea, .fields select, .toolbar select { width: 100%; padding: .7rem .75rem; border: 1px solid var(--color-gray-300); border-radius: .35rem; color: var(--color-global-text); background: var(--color-global-bg); font: inherit; font-weight: 400; }
+	.fields input:focus, .fields textarea:focus, .fields select:focus { border-color: var(--color-accent); outline: 2px solid color-mix(in srgb, var(--color-accent) 20%, transparent); } .body-field { resize: vertical; line-height: 1.65; }
+	.checks { display: flex; gap: 1.5rem; } .checks label { display: flex; align-items: center; } .checks input { width: auto; } .preview-panel { min-height: 20rem; overflow-wrap: anywhere; } .actions { margin-top: 1.5rem; justify-content: flex-start; }
+	.button { display: inline-flex; padding: .6rem .85rem; border: 1px solid var(--color-gray-300); border-radius: .35rem; color: var(--color-global-text); background: transparent; font: inherit; font-weight: 700; cursor: pointer; } .button.primary { border-color: var(--color-accent); color: var(--color-global-bg); background: var(--color-accent); } .button:disabled { cursor: wait; opacity: .55; }
+	@media (min-width: 64rem) { .admin-editor { width: min(92vw, 68rem); margin-left: 50%; transform: translateX(-50%); } .editor-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+</style>

@@ -1,0 +1,62 @@
+---
+import { withBase } from "@/utils/url";
+
+const adminApiUrl = import.meta.env.PUBLIC_ADMIN_API_URL ?? "";
+---
+
+<aside aria-label="Owner controls" class="owner-controls" data-admin-api={adminApiUrl} data-admin-url={withBase("/admin/")} hidden>
+	<a href={`${withBase("/admin/")}?type=note`}>+ Note</a>
+	<a href={`${withBase("/admin/")}?type=post`}>+ Project</a>
+	<a data-edit-link href={withBase("/admin/")} hidden>Edit</a>
+	<button data-owner-logout type="button">Log out</button>
+</aside>
+
+<script>
+	const SESSION_KEY = "lingyue_admin_session";
+	const controls = document.querySelector<HTMLElement>(".owner-controls");
+
+	function currentContent() {
+		const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+		const path = window.location.pathname.replace(base, "").replace(/^\/+|\/+$/g, "");
+		const [section, ...slugParts] = path.split("/");
+		const slug = slugParts[0];
+		if (slugParts.length !== 1 || !slug) return null;
+		if (section === "notes") return { type: "note", slug };
+		if (section === "projects") return { type: "post", slug };
+		return null;
+	}
+
+	async function revealForOwner() {
+		if (!controls) return;
+		const apiUrl = controls.dataset.adminApi?.replace(/\/$/, "");
+		const session = localStorage.getItem(SESSION_KEY);
+		if (!apiUrl || !session) return;
+		try {
+			const response = await fetch(`${apiUrl}/api/session`, { headers: { Authorization: `Bearer ${session}` } });
+			if (!response.ok) throw new Error("Session expired");
+			const content = currentContent();
+			const editLink = controls.querySelector<HTMLAnchorElement>("[data-edit-link]");
+			if (content && editLink) {
+				editLink.href = `${controls.dataset.adminUrl}?type=${content.type}&slug=${encodeURIComponent(content.slug)}`;
+				editLink.hidden = false;
+			}
+			controls.hidden = false;
+		} catch {
+			localStorage.removeItem(SESSION_KEY);
+		}
+	}
+
+	controls?.querySelector("[data-owner-logout]")?.addEventListener("click", () => {
+		localStorage.removeItem(SESSION_KEY);
+		controls.hidden = true;
+	});
+	void revealForOwner();
+</script>
+
+<style>
+	.owner-controls { position: fixed; right: 1rem; bottom: 1rem; z-index: 40; display: flex; align-items: center; gap: .25rem; padding: .35rem; border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent); border-radius: .5rem; background: color-mix(in srgb, var(--color-global-bg) 94%, transparent); box-shadow: 0 .5rem 1.5rem rgb(0 0 0 / 12%); backdrop-filter: blur(10px); }
+	.owner-controls[hidden] { display: none; }
+	.owner-controls a, .owner-controls button { padding: .45rem .65rem; border: 0; border-radius: .3rem; color: var(--color-accent); background: transparent; font: inherit; font-weight: 700; cursor: pointer; }
+	.owner-controls a:hover, .owner-controls button:hover { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+	.owner-controls button { color: var(--color-muted); }
+</style>

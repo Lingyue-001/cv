@@ -13,12 +13,16 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_ADMIN_API_URL: ${{ vars.PUBLIC_ADMIN_API_URL }}
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v6
 
       - name: Install, build, and upload your site
         uses: withastro/action@v6
+        env:
+          PUBLIC_ADMIN_API_URL: ${{ vars.PUBLIC_ADMIN_API_URL }}
         with:
           node-version: 24
           package-manager: npm
