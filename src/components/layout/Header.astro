@@ -122,13 +122,19 @@ const isCurrentPath = (path: string) =>
 				contactLinks.map((link) => (
 					<li>
 						<a
-							class="text-muted hover:text-link block"
+							class="group/contact text-muted hover:text-link relative block"
 							href={link.href}
 							rel={link.href.startsWith("http") ? "noreferrer" : undefined}
 							target={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "_blank" : undefined}
 						>
 							<span class="sr-only">{link.label}</span>
 							<Icon aria-hidden="true" class="h-5 w-5" focusable="false" name={link.icon} />
+							<span
+								aria-hidden="true"
+								class="bg-global-text text-global-bg pointer-events-none absolute bottom-full start-1/2 z-10 mb-2 w-max -translate-x-1/2 rounded px-2 py-1 text-xs font-semibold opacity-0 transition-opacity group-hover/contact:opacity-100 group-focus-visible/contact:opacity-100"
+							>
+								{link.label}
+							</span>
 						</a>
 					</li>
 				))
